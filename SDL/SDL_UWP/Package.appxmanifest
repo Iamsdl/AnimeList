@@ -7,14 +7,14 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="c517f86d-246d-4129-ad48-ec6e2eb4cb52"
+    Name="c7a45726-5770-4824-b7ef-da617214efd8"
     Publisher="CN=SDL"
     Version="1.0.0.0" />
 
-  <mp:PhoneIdentity PhoneProductId="c517f86d-246d-4129-ad48-ec6e2eb4cb52" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
+  <mp:PhoneIdentity PhoneProductId="c7a45726-5770-4824-b7ef-da617214efd8" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>AnimeListUWP</DisplayName>
+    <DisplayName>SDL_UWP</DisplayName>
     <PublisherDisplayName>SDL</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
@@ -30,12 +30,12 @@
   <Applications>
     <Application Id="App"
       Executable="$targetnametoken$.exe"
-      EntryPoint="AnimeListUWP.App">
+      EntryPoint="SDL_UWP.App">
       <uap:VisualElements
-        DisplayName="AnimeListUWP"
+        DisplayName="SDL_UWP"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="AnimeListUWP"
+        Description="SDL_UWP"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />
