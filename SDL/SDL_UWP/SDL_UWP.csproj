@@ -98,12 +98,16 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Animes.cs" />
-    <Compile Include="Models\Games.cs" />
-    <Compile Include="Models\Mangas.cs" />
-    <Compile Include="Models\Names.cs" />
-    <Compile Include="Models\OVAs.cs" />
+    <Compile Include="Models\Anime.cs" />
+    <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\Game.cs" />
+    <Compile Include="Models\Manga.cs" />
+    <Compile Include="Models\Alias.cs" />
+    <Compile Include="Models\Movie.cs" />
+    <Compile Include="Models\ONA.cs" />
+    <Compile Include="Models\OVA.cs" />
     <Compile Include="Models\SDL.cs" />
+    <Compile Include="Models\Special.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -134,10 +138,13 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.EntityFrameworkCore">
-      <Version>1.1.2</Version>
+      <Version>1.1.3</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer">
+      <Version>1.1.3</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools">
-      <Version>1.1.1</Version>
+      <Version>1.1.2</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
       <Version>5.4.0</Version>

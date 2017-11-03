@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace SDL_UWP.Models
 {
-    class OVAs
+    class OVA
     {
     }
 }
