@@ -17,9 +17,12 @@ namespace SDL_UWP.Models
 
         public virtual DbSet<Alias> Names { get; set; }
         public virtual DbSet<Anime> Animes { get; set; }
-        public virtual DbSet<OVA> OVAs{ get; set; }
-        public virtual DbSet<Manga> Mangas { get; set; }
+        public virtual DbSet<Book> Books { get; set; }
         public virtual DbSet<Game> Games { get; set; }
+        public virtual DbSet<Manga> Mangas { get; set; }
         public virtual DbSet<Movie> Movies { get; set; }
+        public virtual DbSet<ONA> ONAs { get; set; }
+        public virtual DbSet<OVA> OVAs { get; set; }
+        public virtual DbSet<Special> Specials { get; set; }
     }
 }

@@ -8,5 +8,7 @@ namespace SDL_UWP.Models
 {
     class Game
     {
+        public string FullName { get; set; }
+
     }
 }
