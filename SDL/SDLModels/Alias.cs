@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SDL_UWP.Models
+namespace SDLModels
 {
     class Alias
     {

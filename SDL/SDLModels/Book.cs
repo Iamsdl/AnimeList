@@ -1,4 +1,4 @@
-﻿namespace SDL_UWP.Models
+﻿namespace SDLModels
 {
     class Book
     {
