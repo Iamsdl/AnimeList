@@ -1,11 +1,16 @@
 ﻿namespace SDLModels
 {
-    class Anime
+    public class Anime
     {
+        public Anime()
+        {
+
+        }
+        public string AliasName { get; set; }
         public string FullName { get; set; }
-        public ushort Season { get; set; }
-        public ushort SeenEpisodes { get; set; }
-        public ushort TotalEpisodes { get; set; }
+        public short Season { get; set; }
+        public short SeenEpisodes { get; set; }
+        public short TotalEpisodes { get; set; }
 
         public virtual Alias Alias { get; set; }
 

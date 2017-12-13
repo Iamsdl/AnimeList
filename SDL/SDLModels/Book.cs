@@ -1,11 +1,16 @@
 ﻿namespace SDLModels
 {
-    class Book
+    public class Book
     {
+        public Book()
+        {
+
+        }
+        public string AliasName { get; set; }
         public string Title { get; set; }
-        public ushort Volume { get; set; }
-        public ushort ReadChapters { get; set; }
-        public ushort TotalChapters { get; set; }
+        public short Volume { get; set; }
+        public short ReadChapters { get; set; }
+        public short TotalChapters { get; set; }
 
         public virtual Alias Alias { get; set; }
     }

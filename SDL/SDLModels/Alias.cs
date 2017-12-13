@@ -2,7 +2,7 @@
 
 namespace SDLModels
 {
-    class Alias
+    public class Alias
     {
         public Alias()
         {
