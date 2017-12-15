@@ -19,7 +19,7 @@ namespace SDLWebapi.Controllers
         }
 
         /// <summary>
-        /// Returns all the animes in the database in JSON format.
+        /// Returns all the animes in JSON format.
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAll")]
@@ -29,7 +29,7 @@ namespace SDLWebapi.Controllers
             {
                 if (!_SDL.Animes.Any())
                 {
-                    return "Failed.\nThere are no animes in the database.";
+                    return "There are no animes in the database.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(_SDL.Animes);
                 return "Success.\n" + jsonAnimes;
@@ -41,7 +41,7 @@ namespace SDLWebapi.Controllers
         }
 
         /// <summary>
-        /// Returns all the animes in the database for a given alias in JSON format.
+        /// Returns all the animes for a given alias in JSON format.
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllFor/{aliasName}")]
@@ -52,7 +52,7 @@ namespace SDLWebapi.Controllers
                 var animes = _SDL.Animes.Where(a => a.AliasName == aliasName);
                 if (!animes.Any())
                 {
-                    return "Failed.\nThere are no animes with this alias in the database.";
+                    return $"There are no animes with the {aliasName} alias in the database.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(animes);
                 return "Success.\n" + jsonAnimes;
@@ -64,7 +64,7 @@ namespace SDLWebapi.Controllers
         }
 
         /// <summary>
-        /// Returns the anime in the database for the given aliasName and season in JSON format.
+        /// Returns a single anime in JSON format.
         /// </summary>
         /// <param name="aliasName"></param>
         /// <param name="season"></param>
@@ -77,7 +77,7 @@ namespace SDLWebapi.Controllers
                 var anime = _SDL.Animes.Find(aliasName, season);
                 if (anime == null)
                 {
-                    return "Failed.\nCould not find this anime.";
+                    return $"Could not find {aliasName}, season {season} anime.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(anime);
                 return "Success.\n" + jsonAnimes;
@@ -89,7 +89,7 @@ namespace SDLWebapi.Controllers
         }
 
         /// <summary>
-        /// Adds a new anime in the database. If an alias for that anime does not exist, it first creates the alias.
+        /// Adds a new anime. If an alias for that anime does not exist, it first creates the alias.
         /// </summary>
         /// <param name="anime"></param>
         /// <returns></returns>
@@ -102,20 +102,19 @@ namespace SDLWebapi.Controllers
 
                 if (alias == null)
                 {
-#warning use AliasController to add a new alias.
-                    //alias = new Alias() { Name = anime.AliasName };
-                    //_SDL.Aliases.Add(alias);
+                    alias = new Alias() { Name = anime.AliasName };
+                    _SDL.Aliases.Add(alias);
                 }
                 else
                 {
                     if (alias.Animes.Any(a => a.Season == anime.Season))
                     {
-                        return "Failed.\nAnime already exists.";
+                        return $"Failed.\n{anime.AliasName}, season {anime.Season} anime already exists.";
                     }
                 }
                 _SDL.Animes.Add(anime);
                 _SDL.SaveChanges();
-                return "Success.\nAnime has been added in the database.";
+                return $"Success.\n{anime.AliasName}, season {anime.Season} anime has been added.";
             }
             catch (Exception e)
             {
@@ -123,25 +122,64 @@ namespace SDLWebapi.Controllers
             }
         }
 
+        /// <summary>
+        /// Edits an existing anime. If an alias for the editedAnime does not exist, it first creates the alias.
+        /// </summary>
+        /// <param name="aliasName"></param>
+        /// <param name="season"></param>
+        /// <param name="editedAnime"></param>
+        /// <returns></returns>
         [HttpPut("Edit/{aliasName}, season {season}")]
-        public string Edit(string aliasName, short season, [FromBody] Anime modifiedAnime)
+        public string Edit(string aliasName, short season, [FromBody] Anime editedAnime)
         {
-            var initialAnime = _SDL.Animes.Find(modifiedAnime.AliasName, modifiedAnime.Season);
-            if (initialAnime != null)
+            try
             {
-                initialAnime.AliasName = modifiedAnime.AliasName;
-                initialAnime.FullName = modifiedAnime.FullName;
-                initialAnime.Season = modifiedAnime.Season;
-                initialAnime.SeenEpisodes = modifiedAnime.SeenEpisodes;
-                initialAnime.TotalEpisodes = modifiedAnime.TotalEpisodes;
+                var initialAnime = _SDL.Animes.Find(aliasName, season);
+                if (initialAnime == null)
+                {
+                    return $"Failed.\nCould not find {aliasName}, season {season} anime to edit.";
+                }
+                Anime existingAnime = _SDL.Animes.Find(editedAnime.AliasName, editedAnime.Season);
+                if (existingAnime != null)
+                {
+                    if (existingAnime != initialAnime)
+                    {
+                        return $"Failed.\n{editedAnime.AliasName}, season {editedAnime.Season} anime already exists.";
+                    }
+                    else
+                    {
+                        //if existingAnime==initialAnime then we know for sure that the alias exists so we skip the check.
+                        goto Edit;
+                    }
+                }
+                Alias alias = _SDL.Aliases.Find(editedAnime.AliasName);
+                if (alias == null)
+                {
+                    alias = new Alias() { Name = editedAnime.AliasName };
+                    _SDL.Aliases.Add(alias);
+                }
+
+                Edit:
+                initialAnime.AliasName = editedAnime.AliasName;
+                initialAnime.FullName = editedAnime.FullName;
+                initialAnime.Season = editedAnime.Season;
+                initialAnime.SeenEpisodes = editedAnime.SeenEpisodes;
+                initialAnime.TotalEpisodes = editedAnime.TotalEpisodes;
 
                 _SDL.Update(initialAnime);
                 _SDL.SaveChanges();
-                return "Success.";
+                return $"Success.\nThe {aliasName}, season {season} anime has been changed.";
             }
-            return "Failed.";
+            catch(Exception e)
+            {
+                return "Failed.\n" + e.Message;
+            }
         }
 
+        /// <summary>
+        /// Deletes all the animes.
+        /// </summary>
+        /// <returns></returns>
         [HttpDelete("DeleteAll")]
         public string DeleteAll()
         {
@@ -151,8 +189,10 @@ namespace SDLWebapi.Controllers
                 {
                     return "There are no animes in the database to delete.";
                 }
+
                 _SDL.Animes.RemoveRange(_SDL.Animes);
-                return "Success. All the animes in the database have been deleted.";
+                _SDL.SaveChanges();
+                return "Success.\nAll the animes in the database have been deleted.";
             }
             catch (Exception e)
             {
@@ -160,17 +200,57 @@ namespace SDLWebapi.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes all the animes for a given alias.
+        /// </summary>
+        /// <param name="aliasName"></param>
+        /// <returns></returns>
         [HttpDelete("DeleteAllFor/{aliasName}")]
         public string DeleteAllFor(string aliasName)
         {
-            return "";
+            try
+            {
+                var animes = _SDL.Animes.Where(a => a.AliasName == aliasName);
+                if (!animes.Any())
+                {
+                    return $"There are no animes with the {aliasName} alias to delete.";
+                }
+
+                _SDL.Animes.RemoveRange(animes);
+                _SDL.SaveChanges();
+                return $"Success.\nAll the animes with the {aliasName} alias have been deleted.";
+            }
+            catch (Exception e)
+            {
+                return "Failed.\n" + e.Message;
+            }
         }
 
+        /// <summary>
+        /// Deletes a single anime.
+        /// </summary>
+        /// <param name="aliasName"></param>
+        /// <param name="season"></param>
+        /// <returns></returns>
         [HttpDelete("Delete/{aliasName}, season {season}")]
         public string Delete(string aliasName, short season)
         {
+            try
+            {
+                Anime anime = _SDL.Animes.Find(aliasName, season);
+                if (anime==null)
+                {
+                    return $"Could not find {aliasName}, season {season} anime to delete.";
+                }
 
-            return "";
+                _SDL.Animes.Remove(anime);
+                _SDL.SaveChanges();
+                return $"Success.\n{aliasName}, season {season} anime has been deleted.";
+            }
+            catch (Exception e)
+            {
+                return "Failed.\n" + e.Message;
+            }
         }
     }
 }

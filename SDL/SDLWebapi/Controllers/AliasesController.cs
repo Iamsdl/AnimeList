@@ -2,6 +2,7 @@
 using SDLModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System;
 
 namespace SDLWebapi.Controllers
 {
@@ -18,12 +19,20 @@ namespace SDLWebapi.Controllers
         [HttpPost("Add/{aliasName}")]
         public string Add(string aliasName)
         {
-#warning normalize names?
-            if (!_SDL.Aliases.Any(a=>a.Name==aliasName))
+            try
             {
+                if (_SDL.Aliases.Any(a => a.Name == aliasName))
+                {
+                    return "Failed.\n Alias already exists.";
+                }
                 Alias alias = new Alias() { Name = aliasName };
                 _SDL.Aliases.Add(alias);
+                _SDL.SaveChanges();
                 return "Success.\nAlias has been added in the database.";
+            }
+            catch (Exception e)
+            {
+                return "Failed.\n" + e.Message;
             }
         }
     }
