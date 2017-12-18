@@ -33,7 +33,6 @@ namespace SDLModels
         {
             try
             {
-#warning add null checks
                 if (Animes.Any())
                 {
                     context.Animes.RemoveRange(Animes);

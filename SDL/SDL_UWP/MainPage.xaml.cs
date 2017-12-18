@@ -13,5 +13,9 @@ namespace SDL_UWP
         {
             this.InitializeComponent();
         }
+        public void Testing()
+        {
+            var splitview = new SplitView();
+        }
     }
 }

@@ -6,7 +6,27 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
+    <SplitView IsPaneOpen="true"
+           DisplayMode="Inline"
+           OpenPaneLength="296">
+        <SplitView.Pane>
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition/>
+                    <RowDefinition Height="9*"/>
+                </Grid.RowDefinitions>
+                <ListView HorizontalAlignment="Left" Height="972" Grid.Row="1" VerticalAlignment="Top" Width="296"/>
+                <AutoSuggestBox HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="276"/>
+                <ComboBox HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="276"/>
 
-    <Grid Background="Black">
-    </Grid>
+            </Grid>
+        </SplitView.Pane>
+
+        <Grid>
+            <TextBlock Text="Content"
+                   FontSize="24"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Center"/>
+        </Grid>
+    </SplitView>
 </Page>
