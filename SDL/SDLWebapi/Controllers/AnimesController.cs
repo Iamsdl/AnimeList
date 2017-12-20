@@ -4,7 +4,6 @@ using Newtonsoft.Json;
 using SDLModels;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 
 namespace SDLWebapi.Controllers
 {
@@ -32,11 +31,11 @@ namespace SDLWebapi.Controllers
                     return "There are no animes in the database.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(_SDL.Animes);
-                return "Success.\n" + jsonAnimes;
+                return "Success. " + jsonAnimes;
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -55,11 +54,11 @@ namespace SDLWebapi.Controllers
                     return $"There are no animes with the {aliasName} alias in the database.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(animes);
-                return "Success.\n" + jsonAnimes;
+                return "Success. " + jsonAnimes;
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -80,11 +79,11 @@ namespace SDLWebapi.Controllers
                     return $"Could not find {aliasName}, season {season} anime.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(anime);
-                return "Success.\n" + jsonAnimes;
+                return "Success. " + jsonAnimes;
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -98,7 +97,7 @@ namespace SDLWebapi.Controllers
         {
             try
             {
-                Alias alias = _SDL.Aliases.Find(anime.AliasName);
+                Alias alias = _SDL.Aliases.Include(a => a.Animes).Where(a => a.Name == anime.AliasName).FirstOrDefault();
 
                 if (alias == null)
                 {
@@ -109,16 +108,16 @@ namespace SDLWebapi.Controllers
                 {
                     if (alias.Animes.Any(a => a.Season == anime.Season))
                     {
-                        return $"Failed.\n{anime.AliasName}, season {anime.Season} anime already exists.";
+                        return $"Failed. {anime.AliasName}, season {anime.Season} anime already exists.";
                     }
                 }
                 _SDL.Animes.Add(anime);
                 _SDL.SaveChanges();
-                return $"Success.\n{anime.AliasName}, season {anime.Season} anime has been added.";
+                return $"Success. {anime.AliasName}, season {anime.Season} anime has been added.";
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -144,7 +143,7 @@ namespace SDLWebapi.Controllers
                 {
                     if (existingAnime != initialAnime)
                     {
-                        return $"Failed.\n{editedAnime.AliasName}, season {editedAnime.Season} anime already exists.";
+                        return $"Failed. {editedAnime.AliasName}, season {editedAnime.Season} anime already exists.";
                     }
                     else
                     {
@@ -172,7 +171,7 @@ namespace SDLWebapi.Controllers
             }
             catch(Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -196,7 +195,7 @@ namespace SDLWebapi.Controllers
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -222,7 +221,7 @@ namespace SDLWebapi.Controllers
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
 
@@ -245,11 +244,11 @@ namespace SDLWebapi.Controllers
 
                 _SDL.Animes.Remove(anime);
                 _SDL.SaveChanges();
-                return $"Success.\n{aliasName}, season {season} anime has been deleted.";
+                return $"Success. {aliasName}, season {season} anime has been deleted.";
             }
             catch (Exception e)
             {
-                return "Failed.\n" + e.Message;
+                return "Failed. " + e.Message;
             }
         }
     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SDLModels;
 
-namespace SDLModels
+namespace SDLWebapi
 {
     public class SDL : DbContext
     {

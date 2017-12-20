@@ -15,15 +15,15 @@
                     <RowDefinition/>
                     <RowDefinition Height="9*"/>
                 </Grid.RowDefinitions>
-                <ListView HorizontalAlignment="Left" Height="972" Grid.Row="1" VerticalAlignment="Top" Width="296"/>
-                <AutoSuggestBox HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="276"/>
-                <ComboBox HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="276"/>
+                <ListView x:Name="NamesList" HorizontalAlignment="Left" Height="972" Grid.Row="1" VerticalAlignment="Top" Width="296"/>
+                <AutoSuggestBox x:Name="AutoSuggest" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="276"/>
+                <ComboBox Name="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="276" SelectionChanged="Category_SelectionChangedAsync"/>
 
             </Grid>
         </SplitView.Pane>
 
         <Grid>
-            <TextBlock Text="Content"
+            <TextBlock x:Name="stuff" Text="Content"
                    FontSize="24"
                    VerticalAlignment="Center"
                    HorizontalAlignment="Center"/>

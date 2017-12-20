@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using SDLModels;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
+using SDLModels;
 
 namespace SDLWebapi.Controllers
 {
@@ -35,5 +35,50 @@ namespace SDLWebapi.Controllers
                 return "Failed.\n" + e.Message;
             }
         }
+        //public string Delete(SDL context)
+        //{
+        //    try
+        //    {
+        //        if (Animes.Any())
+        //        {
+        //            context.Animes.RemoveRange(Animes);
+        //        }
+        //        if (Books.Any())
+        //        {
+        //            context.Books.RemoveRange(Books);
+        //        }
+        //        if (Games.Any())
+        //        {
+        //            context.Games.RemoveRange(Games);
+        //        }
+        //        if (Mangas.Any())
+        //        {
+        //            context.Mangas.RemoveRange(Mangas);
+        //        }
+        //        if (Movies.Any())
+        //        {
+        //            context.Movies.RemoveRange(Movies);
+        //        }
+        //        if (ONAs.Any())
+        //        {
+        //            context.ONAs.RemoveRange(ONAs);
+        //        }
+        //        if (OVAs.Any())
+        //        {
+        //            context.OVAs.RemoveRange(OVAs);
+        //        }
+        //        if (Specials.Any())
+        //        {
+        //            context.Specials.RemoveRange(Specials);
+        //        }
+
+        //        context.Aliases.Remove(this);
+        //        return $"Success.\nThe {Name} alias and all related entities have been deleted.";
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return "Failed.\n" + e.Message;
+        //    }
+        //}
     }
 }
