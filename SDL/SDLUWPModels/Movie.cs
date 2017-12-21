@@ -1,4 +1,4 @@
-﻿namespace SDLModels
+﻿namespace SDLUWPModels
 {
     public class Movie
     {

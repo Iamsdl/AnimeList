@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System;
 using SDLModels;
+using Newtonsoft.Json;
 
 namespace SDLWebapi.Controllers
 {
@@ -14,6 +15,38 @@ namespace SDLWebapi.Controllers
         public AliasesController(SDL context)
         {
             _SDL = context;
+        }
+
+        /// <summary>
+        /// Returns all the aliases in JSON format.
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("GetAll")]
+        public string GetAll()
+        {
+            try
+            {
+                if (!_SDL.Aliases.Any())
+                {
+                    return "There are no aliases in the database.";
+                }
+                string jsonAliases = JsonConvert.SerializeObject(
+                    _SDL.Aliases
+                    .Include(a => a.Animes)
+                    .Include(a => a.Books)
+                    .Include(a => a.Games)
+                    .Include(a => a.Mangas)
+                    .Include(a => a.Movies)
+                    .Include(a => a.ONAs)
+                    .Include(a => a.OVAs)
+                    .Include(a => a.Specials)
+                , new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+                return "Success. " + jsonAliases;
+            }
+            catch (Exception e)
+            {
+                return "Failed. " + e.Message;
+            }
         }
 
         [HttpPost("Add/{aliasName}")]

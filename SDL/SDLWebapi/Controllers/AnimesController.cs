@@ -43,15 +43,15 @@ namespace SDLWebapi.Controllers
         /// Returns all the animes for a given alias in JSON format.
         /// </summary>
         /// <returns></returns>
-        [HttpGet("GetAllFor/{aliasName}")]
-        public string GetAllFor(string aliasName)
+        [HttpGet("GetAllFor/{name}")]
+        public string GetAllFor(string name)
         {
             try
             {
-                var animes = _SDL.Animes.Where(a => a.AliasName == aliasName);
+                var animes = _SDL.Animes.Where(a => a.AliasName.Contains(name)||a.FullName.Contains(name));
                 if (!animes.Any())
                 {
-                    return $"There are no animes with the {aliasName} alias in the database.";
+                    return $"There are no animes with the {name} alias in the database.";
                 }
                 string jsonAnimes = JsonConvert.SerializeObject(animes);
                 return "Success. " + jsonAnimes;
