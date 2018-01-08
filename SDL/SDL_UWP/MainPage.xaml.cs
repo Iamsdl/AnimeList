@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media.Imaging;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -58,12 +59,14 @@ namespace SDL_UWP
             Category.SelectedIndex = 0;
         }
 
+        Categories result;
+
         private async void Category_SelectionChangedAsync(object sender, SelectionChangedEventArgs e)
         {
             try
             {
                 string selectedCategory = Category.SelectedValue.ToString();
-                Enum.TryParse(selectedCategory, out Categories result);
+                Enum.TryParse(selectedCategory, out result);
                 switch (result)
                 {
                     case Categories.Aliases:
@@ -324,11 +327,11 @@ namespace SDL_UWP
                         break;
                 }
             }
-            catch(HttpRequestException exception)
+            catch (HttpRequestException exception)
             {
                 await ShowDialog("Cannot connect to the server.", exception.Message);
             }
-            catch(Exception exception)
+            catch (Exception exception)
             {
                 await ShowDialog("An exception occurred on the client.", exception.Message);
             }
@@ -342,6 +345,153 @@ namespace SDL_UWP
                 CloseButtonText = "Ok"
             };
             ContentDialogResult dialogResult = await dialog.ShowAsync();
+        }
+
+        private void AutoSuggest_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
+        {
+            switch (result)
+            {
+                case Categories.Aliases:
+                    NamesList.ItemsSource = _aliasesList.Where(a => a.Name.Contains(AutoSuggest.Text)).Select(x => x.Name).Distinct();
+                    break;
+                case Categories.Animes:
+                    NamesList.ItemsSource = _animesList.Where(a => a.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.Books:
+                    NamesList.ItemsSource = _booksList.Where(b => b.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.Games:
+                    NamesList.ItemsSource = _gamesList.Where(g => g.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.Mangas:
+                    NamesList.ItemsSource = _mangasList.Where(m => m.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.Movies:
+                    NamesList.ItemsSource = _moviesList.Where(m => m.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.ONAs:
+                    NamesList.ItemsSource = _ONAsList.Where(o => o.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.OVAs:
+                    NamesList.ItemsSource = _OVAsList.Where(o => o.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+                case Categories.Specials:
+                    NamesList.ItemsSource = _specialsList.Where(s => s.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
+                    break;
+            }
+        }
+
+        private void NamesList_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            Content.Children.Clear();
+            Alias alias;
+            try
+            {
+                alias = _aliasesList.Where(a => a.Name == NamesList.SelectedValue.ToString()).FirstOrDefault();
+            }
+            catch
+            {
+                return;
+            }
+            switch (result)
+            {
+                case Categories.Aliases:
+
+                    break;
+                case Categories.Animes:
+                    int i = 0;
+                    foreach (var anime in alias.Animes)
+                    {
+                        Image animeImage = new Image()
+                        {
+                            Height = 180,
+                            Width = 320,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Margin = new Windows.UI.Xaml.Thickness(10, 53 + i * 185, 0, 0),
+#warning change this
+                            Source = new BitmapImage() { UriSource=new Uri(BaseUri,"Assets/kurisu.png")}
+                        };
+
+                        TextBox animeAliasName = new TextBox()
+                        {
+                            Text = anime.AliasName,
+                            IsEnabled = false,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            Margin = new Windows.UI.Xaml.Thickness(335, 53 + i * 185, 0, 0),
+                            TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Width = 637
+
+                        };
+
+                        TextBox animeSeason = new TextBox()
+                        {
+                            Text = "Season: " + anime.Season.ToString(),
+                            IsEnabled = false,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            Margin = new Windows.UI.Xaml.Thickness(977, 53 + i * 185, 0, 0),
+                            TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Width = 637
+                        };
+
+                        TextBox animeFullName = new TextBox()
+                        {
+                            Text = anime.FullName,
+                            IsEnabled = false,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            Margin = new Windows.UI.Xaml.Thickness(335, 90 + i * 185, 0, 0),
+                            TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Width = 1279
+                        };
+
+                        TextBox animeSeenEpisodes = new TextBox()
+                        {
+                            Text = anime.SeenEpisodes.ToString(),
+                            IsEnabled = false,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            Margin = new Windows.UI.Xaml.Thickness(335, 127 + i * 185, 0, 0),
+                            TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Width = 637
+                        };
+
+                        TextBox animeTotalEpisodes = new TextBox()
+                        {
+                            Text = anime.FullName,
+                            IsEnabled = false,
+                            HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
+                            Margin = new Windows.UI.Xaml.Thickness(977, 127 + i * 185, 0, 0),
+                            TextWrapping = Windows.UI.Xaml.TextWrapping.Wrap,
+                            VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
+                            Width = 637
+                        };
+                        Content.Children.Add(animeImage);
+                        Content.Children.Add(animeAliasName);
+                        Content.Children.Add(animeSeason);
+                        Content.Children.Add(animeFullName);
+                        Content.Children.Add(animeSeenEpisodes);
+                        Content.Children.Add(animeTotalEpisodes);
+                        i++;
+                    }
+                    break;
+                case Categories.Books:
+                    break;
+                case Categories.Games:
+                    break;
+                case Categories.Mangas:
+                    break;
+                case Categories.Movies:
+                    break;
+                case Categories.ONAs:
+                    break;
+                case Categories.OVAs:
+                    break;
+                case Categories.Specials:
+                    break;
+            }
         }
     }
 }

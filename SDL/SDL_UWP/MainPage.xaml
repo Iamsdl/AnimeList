@@ -15,18 +15,20 @@
                     <RowDefinition/>
                     <RowDefinition Height="9*"/>
                 </Grid.RowDefinitions>
-                <ListView x:Name="NamesList" HorizontalAlignment="Left" Height="972" Grid.Row="1" VerticalAlignment="Top" Width="296"/>
-                <AutoSuggestBox x:Name="AutoSuggest" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="276"/>
+                <ListView x:Name="NamesList" HorizontalAlignment="Left" Height="972" Grid.Row="1" VerticalAlignment="Top" Width="296" SelectionChanged="NamesList_SelectionChanged"/>
+                <AutoSuggestBox x:Name="AutoSuggest" HorizontalAlignment="Left" Margin="10,50,0,0" VerticalAlignment="Top" Width="276" TextChanged="AutoSuggest_TextChanged"/>
                 <ComboBox Name="Category" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="276" SelectionChanged="Category_SelectionChangedAsync"/>
 
             </Grid>
         </SplitView.Pane>
 
-        <Grid>
-            <TextBlock x:Name="stuff" Text="Content"
-                   FontSize="24"
-                   VerticalAlignment="Center"
-                   HorizontalAlignment="Center"/>
+        <Grid Name="Content">
+            <CommandBar>
+                <CommandBar.Content>
+                    <Grid/>
+                </CommandBar.Content>
+            </CommandBar>
+            <Image HorizontalAlignment="Left" Height="180" Margin="10,238,0,0" VerticalAlignment="Top" Width="320"/>
         </Grid>
     </SplitView>
 </Page>
