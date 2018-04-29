@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class OVA
+    public class OVA : IItem
     {
         public OVA()
         {

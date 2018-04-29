@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Game
+    public class Game : IItem
     {
         public Game()
         {

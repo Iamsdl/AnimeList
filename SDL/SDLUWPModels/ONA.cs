@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class ONA
+    public class ONA : IItem
     {
         public ONA()
         {

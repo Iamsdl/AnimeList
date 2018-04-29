@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Book
+    public class Book : IItem
     {
         public Book()
         {

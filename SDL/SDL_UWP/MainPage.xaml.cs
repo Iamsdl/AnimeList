@@ -460,7 +460,7 @@ namespace SDL_UWP
 
                         TextBox animeTotalEpisodes = new TextBox()
                         {
-                            Text = anime.FullName,
+                            Text = anime.TotalEpisodes.ToString(),
                             IsEnabled = false,
                             HorizontalAlignment = Windows.UI.Xaml.HorizontalAlignment.Left,
                             Margin = new Windows.UI.Xaml.Thickness(977, 127 + i * 185, 0, 0),

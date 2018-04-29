@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Anime
+    public class Anime : IItem
     {
         public Anime()
         {

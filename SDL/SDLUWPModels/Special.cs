@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Special
+    public class Special : IItem
     {
         public Special()
         {

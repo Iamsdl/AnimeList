@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Movie
+    public class Movie : IItem
     {
         public Movie()
         {

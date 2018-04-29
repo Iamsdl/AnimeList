@@ -1,6 +1,6 @@
 ﻿namespace SDLUWPModels
 {
-    public class Manga
+    public class Manga : IItem
     {
         public Manga()
         {

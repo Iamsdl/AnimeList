@@ -2,7 +2,7 @@
 
 namespace SDLUWPModels
 {
-    public class Alias
+    public class Alias : IItem
     {
         public Alias()
         {

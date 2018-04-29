@@ -110,6 +110,7 @@
     <Compile Include="Anime.cs" />
     <Compile Include="Book.cs" />
     <Compile Include="Game.cs" />
+    <Compile Include="IItem.cs" />
     <Compile Include="Manga.cs" />
     <Compile Include="Movie.cs" />
     <Compile Include="ONA.cs" />
