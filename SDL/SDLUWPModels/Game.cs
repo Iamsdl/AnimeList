@@ -1,13 +1,13 @@
 ﻿namespace SDLUWPModels
 {
-    public class Game : IItem
+    public class Game :IItem
     {
         public Game()
         {
 
         }
-        public string AliasName { get; set; }
-        public string FullName { get; set; }
+        public string AliasName { get { return ShortName; } set { ShortName = value; } }
+        public string FullName { get { return LongName; } set { LongName = value; } }
 
         public virtual Alias Alias { get; set; }
     }

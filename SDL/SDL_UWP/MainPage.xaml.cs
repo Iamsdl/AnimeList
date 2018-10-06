@@ -29,6 +29,7 @@ namespace SDL_UWP
             OVAs = 7,
             Specials = 8
         }
+        private List<IItem>[] _categoriesList = new List<IItem>[9];
         private List<Alias> _aliasesList = new List<Alias>();
         private List<Anime> _animesList = new List<Anime>();
         private List<Book> _booksList = new List<Book>();
@@ -42,7 +43,6 @@ namespace SDL_UWP
         public MainPage()
         {
             InitializeComponent();
-
             List<string> categories = new List<string>()
             {
                 "Aliases",
@@ -55,6 +55,10 @@ namespace SDL_UWP
                 "OVAs",
                 "Specials"
             };
+            for (int i = 0; i <= 8; i++)
+            {
+                _categoriesList[i] = new List<IItem>();
+            }
             Category.ItemsSource = categories;
             Category.SelectedIndex = 0;
         }
@@ -67,264 +71,305 @@ namespace SDL_UWP
             {
                 string selectedCategory = Category.SelectedValue.ToString();
                 Enum.TryParse(selectedCategory, out result);
-                switch (result)
+                if (!_categoriesList[Convert.ToInt32(result)].Any())
                 {
-                    case Categories.Aliases:
-                        if (!_aliasesList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    HttpClient client = new HttpClient();
+                    HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _aliasesList = JsonConvert.DeserializeObject<List<Alias>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _aliasesList.Select(alias => alias.Name).Distinct();
-                        break;
-                    case Categories.Animes:
-                        if (!_animesList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    if (responseString.StartsWith("\"Success."))
+                    {
+                        string jsonResponse = responseString.Substring(10);
+                        jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                        jsonResponse = jsonResponse.Replace("]\"", "]");
+                        _categoriesList[Convert.ToInt32(result)] = JsonConvert.DeserializeObject<List<IItem>>(jsonResponse);
+                    }
+                    else if (responseString.StartsWith("\"Failed."))
+                    {
+                        string errorMessage = responseString.Substring(9);
+                        await ShowDialog("An exception occurred on the server.", errorMessage);
+                        return;
+                    }
+                    else
+                    {
+                        await ShowDialog(responseString, null);
+                        return;
+                    }
+                }
+                NamesList.ItemsSource = _categoriesList[Convert.ToInt32(result)].Select(item =>
+                (
+                    Convert.ToInt32(result) == 0 ? (item as Alias).AliasName :
+                    Convert.ToInt32(result) == 1 ? (item as Anime).AliasName :
+                    Convert.ToInt32(result) == 2 ? (item as Book).AliasName :
+                    Convert.ToInt32(result) == 3 ? (item as Game).AliasName :
+                    Convert.ToInt32(result) == 4 ? (item as Manga).AliasName :
+                    Convert.ToInt32(result) == 5 ? (item as Movie).AliasName :
+                    Convert.ToInt32(result) == 6 ? (item as ONA).AliasName :
+                    Convert.ToInt32(result) == 7 ? (item as OVA).AliasName :
+                    Convert.ToInt32(result) == 8 ? (item as Special).AliasName : null
+                )).Distinct();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _animesList = JsonConvert.DeserializeObject<List<Anime>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _animesList.Select(anime => anime.AliasName).Distinct();
+                //
+                {
+                    //    switch (result)
+                    //    {
+                    //        case Categories.Aliases:
+                    //            if (!_aliasesList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                        break;
-                    case Categories.Books:
-                        if (!_booksList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _aliasesList = JsonConvert.DeserializeObject<List<Alias>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _aliasesList.Select(alias => alias.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.Animes:
+                    //            if (!_animesList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _booksList = JsonConvert.DeserializeObject<List<Book>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _booksList.Select(book => book.AliasName).Distinct();
-                        break;
-                    case Categories.Games:
-                        if (!_gamesList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _animesList = JsonConvert.DeserializeObject<List<Anime>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _animesList.Select(anime => anime.AliasName).Distinct();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _gamesList = JsonConvert.DeserializeObject<List<Game>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _gamesList.Select(game => game.AliasName).Distinct();
-                        break;
-                    case Categories.Mangas:
-                        if (!_mangasList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //            break;
+                    //        case Categories.Books:
+                    //            if (!_booksList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _mangasList = JsonConvert.DeserializeObject<List<Manga>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _mangasList.Select(manga => manga.AliasName).Distinct();
-                        break;
-                    case Categories.Movies:
-                        if (!_moviesList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _booksList = JsonConvert.DeserializeObject<List<Book>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _booksList.Select(book => book.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.Games:
+                    //            if (!_gamesList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _moviesList = JsonConvert.DeserializeObject<List<Movie>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _moviesList.Select(movie => movie.AliasName).Distinct();
-                        break;
-                    case Categories.ONAs:
-                        if (!_ONAsList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _gamesList = JsonConvert.DeserializeObject<List<Game>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _gamesList.Select(game => game.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.Mangas:
+                    //            if (!_mangasList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _ONAsList = JsonConvert.DeserializeObject<List<ONA>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _ONAsList.Select(ona => ona.AliasName).Distinct();
-                        break;
-                    case Categories.OVAs:
-                        if (!_OVAsList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _mangasList = JsonConvert.DeserializeObject<List<Manga>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _mangasList.Select(manga => manga.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.Movies:
+                    //            if (!_moviesList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _OVAsList = JsonConvert.DeserializeObject<List<OVA>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _OVAsList.Select(ova => ova.AliasName).Distinct();
-                        break;
-                    case Categories.Specials:
-                        if (!_specialsList.Any())
-                        {
-                            HttpClient client = new HttpClient();
-                            HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
-                            string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _moviesList = JsonConvert.DeserializeObject<List<Movie>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _moviesList.Select(movie => movie.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.ONAs:
+                    //            if (!_ONAsList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
 
-                            if (responseString.StartsWith("\"Success."))
-                            {
-                                string jsonResponse = responseString.Substring(10);
-                                jsonResponse = jsonResponse.Replace("\\\"", "\"");
-                                jsonResponse = jsonResponse.Replace("]\"", "]");
-                                _specialsList = JsonConvert.DeserializeObject<List<Special>>(jsonResponse);
-                            }
-                            else if (responseString.StartsWith("\"Failed."))
-                            {
-                                string errorMessage = responseString.Substring(9);
-                                await ShowDialog("An exception occurred on the server.", errorMessage);
-                                return;
-                            }
-                            else
-                            {
-                                await ShowDialog(responseString, null);
-                                return;
-                            }
-                        }
-                        NamesList.ItemsSource = _specialsList.Select(special => special.AliasName).Distinct();
-                        break;
-                    default:
-                        NamesList.ItemsSource = null;
-                        break;
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _ONAsList = JsonConvert.DeserializeObject<List<ONA>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _ONAsList.Select(ona => ona.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.OVAs:
+                    //            if (!_OVAsList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _OVAsList = JsonConvert.DeserializeObject<List<OVA>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _OVAsList.Select(ova => ova.AliasName).Distinct();
+                    //            break;
+                    //        case Categories.Specials:
+                    //            if (!_specialsList.Any())
+                    //            {
+                    //                HttpClient client = new HttpClient();
+                    //                HttpResponseMessage httpResponseMessage = await client.GetAsync(new Uri(_baseAddress + "/api/" + selectedCategory + "/GetAll"));
+                    //                string responseString = await httpResponseMessage.Content.ReadAsStringAsync();
+
+                    //                if (responseString.StartsWith("\"Success."))
+                    //                {
+                    //                    string jsonResponse = responseString.Substring(10);
+                    //                    jsonResponse = jsonResponse.Replace("\\\"", "\"");
+                    //                    jsonResponse = jsonResponse.Replace("]\"", "]");
+                    //                    _specialsList = JsonConvert.DeserializeObject<List<Special>>(jsonResponse);
+                    //                }
+                    //                else if (responseString.StartsWith("\"Failed."))
+                    //                {
+                    //                    string errorMessage = responseString.Substring(9);
+                    //                    await ShowDialog("An exception occurred on the server.", errorMessage);
+                    //                    return;
+                    //                }
+                    //                else
+                    //                {
+                    //                    await ShowDialog(responseString, null);
+                    //                    return;
+                    //                }
+                    //            }
+                    //            NamesList.ItemsSource = _specialsList.Select(special => special.AliasName).Distinct();
+                    //            break;
+                    //        default:
+                    //            NamesList.ItemsSource = null;
+                    //            break;
+                    //    }
                 }
             }
             catch (HttpRequestException exception)
@@ -352,7 +397,7 @@ namespace SDL_UWP
             switch (result)
             {
                 case Categories.Aliases:
-                    NamesList.ItemsSource = _aliasesList.Where(a => a.Name.Contains(AutoSuggest.Text)).Select(x => x.Name).Distinct();
+                    NamesList.ItemsSource = _aliasesList.Where(a => a.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
                     break;
                 case Categories.Animes:
                     NamesList.ItemsSource = _animesList.Where(a => a.AliasName.Contains(AutoSuggest.Text)).Select(x => x.AliasName).Distinct();
@@ -387,7 +432,7 @@ namespace SDL_UWP
             Alias alias;
             try
             {
-                alias = _aliasesList.Where(a => a.Name == NamesList.SelectedValue.ToString()).FirstOrDefault();
+                alias = _aliasesList.Where(a => a.AliasName == NamesList.SelectedValue.ToString()).FirstOrDefault();
             }
             catch
             {
@@ -410,7 +455,7 @@ namespace SDL_UWP
                             VerticalAlignment = Windows.UI.Xaml.VerticalAlignment.Top,
                             Margin = new Windows.UI.Xaml.Thickness(10, 53 + i * 185, 0, 0),
 #warning change this
-                            Source = new BitmapImage() { UriSource=new Uri(BaseUri,"Assets/kurisu.png")}
+                            Source = new BitmapImage() { UriSource = new Uri(BaseUri, "Assets/kurisu.png") }
                         };
 
                         TextBox animeAliasName = new TextBox()

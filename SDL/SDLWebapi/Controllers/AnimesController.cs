@@ -97,11 +97,11 @@ namespace SDLWebapi.Controllers
         {
             try
             {
-                Alias alias = _SDL.Aliases.Include(a => a.Animes).Where(a => a.Name == anime.AliasName).FirstOrDefault();
+                Alias alias = _SDL.Aliases.Include(a => a.Animes).Where(a => a.AliasName== anime.AliasName).FirstOrDefault();
 
                 if (alias == null)
                 {
-                    alias = new Alias() { Name = anime.AliasName };
+                    alias = new Alias() { AliasName = anime.AliasName };
                     _SDL.Aliases.Add(alias);
                 }
                 else
@@ -154,7 +154,7 @@ namespace SDLWebapi.Controllers
                 Alias alias = _SDL.Aliases.Find(editedAnime.AliasName);
                 if (alias == null)
                 {
-                    alias = new Alias() { Name = editedAnime.AliasName };
+                    alias = new Alias() { AliasName = editedAnime.AliasName };
                     _SDL.Aliases.Add(alias);
                 }
 

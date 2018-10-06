@@ -6,12 +6,11 @@
         {
 
         }
-        public string AliasName { get; set; }
-
-        public string Title { get; set; }
-        public short Volume { get; set; }
-        public short ReadChapters { get; set; }
-        public short TotalChapters { get; set; }
+        public string AliasName { get { return ShortName; } set { ShortName = value; } }
+        public string Title { get { return LongName; } set { LongName = value; } }
+        public short Volume { get { return Part; } set { Part = value; } }
+        public short ReadChapters { get { return Seen; } set { Seen = value; } }
+        public short TotalChapters { get { return Total; } set { Total = value; } }
 
         public virtual Alias Alias { get; set; }
     }

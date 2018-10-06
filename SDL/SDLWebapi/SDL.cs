@@ -8,6 +8,7 @@ namespace SDLWebapi
         public SDL(DbContextOptions<SDL> options)
             : base(options)
         {
+            Database.EnsureDeleted();
             Database.EnsureCreated();
         }
 
@@ -29,7 +30,7 @@ namespace SDLWebapi
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Alias>()
-                .HasKey(a => a.Name);
+                .HasKey(a => a.AliasName);
 
             modelBuilder.Entity<Anime>()
                 .HasKey(a => new { a.AliasName, a.Season });
@@ -52,42 +53,42 @@ namespace SDLWebapi
                 .HasMany(alias => alias.Animes)
                 .WithOne(anime => anime.Alias)
                 .HasForeignKey(anime => anime.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.Movies)
                 .WithOne(movie => movie.Alias)
                 .HasForeignKey(movie => movie.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.ONAs)
                 .WithOne(ona => ona.Alias)
                 .HasForeignKey(ona => ona.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.OVAs)
                 .WithOne(ova => ova.Alias)
                 .HasForeignKey(ova => ova.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.Specials)
                 .WithOne(special => special.Alias)
                 .HasForeignKey(special => special.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.Mangas)
                 .WithOne(manga => manga.Alias)
                 .HasForeignKey(manga => manga.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.Books)
                 .WithOne(book => book.Alias)
                 .HasForeignKey(book => book.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
             modelBuilder.Entity<Alias>()
                 .HasMany(alias => alias.Games)
                 .WithOne(game => game.Alias)
                 .HasForeignKey(game => game.AliasName)
-                .HasPrincipalKey(alias => alias.Name);
+                .HasPrincipalKey(alias => alias.AliasName);
 
         }
     }

@@ -2,7 +2,7 @@
 
 namespace SDLModels
 {
-    public class Alias
+    public class Alias : IItem
     {
         public Alias()
         {
@@ -16,7 +16,17 @@ namespace SDLModels
             Specials = new HashSet<Special>();
         }
 
-        public string Name { get; set; }
+        public string AliasName
+        {
+            get
+            {
+                return ShortName;
+            }
+            set
+            {
+                ShortName = value;
+            }
+        }
         public virtual ICollection<Anime> Animes { get; set; }
         public virtual ICollection<Book> Books { get; set; }
         public virtual ICollection<Game> Games { get; set; }
